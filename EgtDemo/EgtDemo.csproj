@@ -14,5 +14,8 @@
   <ProjectReference Include="..\EgtDemo.IRepo\EgtDemo.IRepo.csproj" />
   <ProjectReference Include="..\EgtDemo.IServ\EgtDemo.IServ.csproj" />
 </ItemGroup>
+<ItemGroup>
+  <Folder Include="Extensions\" />
+</ItemGroup>
 
 </Project>
