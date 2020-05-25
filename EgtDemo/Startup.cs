@@ -35,6 +35,9 @@ namespace EgtDemo
             services.AddBCVPSqlsugarExtensions();
 
             services.AddAuthorizationSetup();
+
+            services.AddHttpContextSetup();
+
         }
 
 
