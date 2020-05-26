@@ -20,8 +20,19 @@ namespace EgtDemo.Extensions
 
         private string GetName()
         {
-            return _accessor.HttpContext.User.Identity.Name;
+            if (IsAuthenticated())
+            {
+                return _accessor.HttpContext.User.Identity.Name;
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(GetToken()))
+                {
+                    return GetUserInfoFromToken("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").FirstOrDefault().ObjToString();
+                }
+            }
 
+            return "";
         }
 
         public int ID => GetClaimValueByType("jti").FirstOrDefault().ObjToInt();
