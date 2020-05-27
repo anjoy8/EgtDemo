@@ -1,7 +1,9 @@
 ﻿using Autofac;
 using Autofac.Core;
 using Autofac.Extras.DynamicProxy;
+using EgtDemo.Extensions.Aop;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 
@@ -13,6 +15,11 @@ namespace EgtDemo
         {
             var basePath = AppContext.BaseDirectory;
             //builder.RegisterType<AdvertisementServices>().As<IAdvertisementServices>();
+
+            var cacheType = new List<Type>();
+
+            builder.RegisterType<BlogLogAOP>();
+            cacheType.Add(typeof(BlogLogAOP));
 
 
             #region 带有接口层的服务注入
@@ -35,7 +42,14 @@ namespace EgtDemo
             builder.RegisterAssemblyTypes(assemblysServices)
                       .AsImplementedInterfaces()
                       .InstancePerDependency()
+
+
+                      //.EnableInterfaceInterceptors()//引用Autofac.Extras.DynamicProxy;
+                      //.InterceptedBy(cacheType.ToArray())
+                      
                       ;//允许将拦截器服务的列表分配给注册。
+
+
 
             // 获取 Repository.dll 程序集服务，并注册
             var assemblysRepository = Assembly.LoadFrom(repositoryDllFile);
@@ -45,7 +59,13 @@ namespace EgtDemo
 
             #endregion
 
-          
+
+            //只能注入该类中的虚方法，且必须是public
+            //这里仅仅是一个单独类无接口测试，不用过多追问
+            builder.RegisterAssemblyTypes(Assembly.GetAssembly(typeof(LoveU)))
+                .EnableClassInterceptors()
+                .InterceptedBy(cacheType.ToArray());
+
 
         }
     }
