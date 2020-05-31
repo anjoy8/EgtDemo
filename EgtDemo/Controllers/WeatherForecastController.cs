@@ -21,6 +21,7 @@ namespace EgtDemo.Controllers
         private readonly IDemoServ _demoServ;
         private readonly IRoleModulePermissionServices _roleModulePermissionServices;
         private readonly LoveU _loveU;
+        private readonly ILogger<WeatherForecastController> _logger1;
 
         public WeatherForecastController(ISysUserInfoServices sysUserInfoServices, ILogger<WeatherForecastController> logger, IDemoServ demoServ, IRoleModulePermissionServices roleModulePermissionServices,
             LoveU loveU
@@ -36,6 +37,7 @@ namespace EgtDemo.Controllers
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
+            _logger.LogError("this is an error");
             _loveU.SayHi();
 
 
