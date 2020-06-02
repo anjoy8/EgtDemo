@@ -11,6 +11,7 @@ namespace EgtDemo
         {
             var basePath = AppContext.BaseDirectory;
             //builder.RegisterType<AdvertisementServices>().As<IAdvertisementServices>();
+            builder.RegisterType<LoveU>();
 
 
             #region 带有接口层的服务注入
