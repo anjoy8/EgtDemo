@@ -1,5 +1,6 @@
 ﻿using BCVP.Sample.IServices;
 using EgtDemo.IServ;
+using EgtDemo.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -20,19 +21,25 @@ namespace EgtDemo.Controllers
         private readonly ILogger<WeatherForecastController> _logger;
         private readonly IDemoServ _demoServ;
         private readonly IRoleModulePermissionServices _roleModulePermissionServices;
+        private readonly LoveU _loveU;
 
-        public WeatherForecastController(ISysUserInfoServices sysUserInfoServices, ILogger<WeatherForecastController> logger, IDemoServ demoServ, IRoleModulePermissionServices roleModulePermissionServices)
+        public WeatherForecastController(ISysUserInfoServices sysUserInfoServices, ILogger<WeatherForecastController> logger, IDemoServ demoServ, IRoleModulePermissionServices roleModulePermissionServices,
+            LoveU loveU
+            )
         {
             _sysUserInfoServices = sysUserInfoServices;
             _logger = logger;
             _demoServ = demoServ;
             _roleModulePermissionServices = roleModulePermissionServices;
+            _loveU = loveU;
         }
 
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
             var demos = _demoServ.GetDemos();
+            _loveU.SayLoveU();
+
 
             var rng = new Random();
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast

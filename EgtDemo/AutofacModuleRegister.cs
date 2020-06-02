@@ -1,9 +1,11 @@
 ﻿using Autofac;
-using Autofac.Core;
-using Autofac.Extras.DynamicProxy;
 using System;
 using System.IO;
 using System.Reflection;
+using Autofac.Extras.DynamicProxy;
+using EgtDemo.Model;
+using System.Collections.Generic;
+using EgtDemo.Extensions;
 
 namespace EgtDemo
 {
@@ -13,6 +15,12 @@ namespace EgtDemo
         {
             var basePath = AppContext.BaseDirectory;
             //builder.RegisterType<AdvertisementServices>().As<IAdvertisementServices>();
+            builder.RegisterType<LoveU>();
+            var cacheType = new List<Type>();
+
+            builder.RegisterType<BlogLogAOP>();
+            cacheType.Add(typeof(BlogLogAOP));
+
 
 
             #region 带有接口层的服务注入
@@ -35,7 +43,10 @@ namespace EgtDemo
             builder.RegisterAssemblyTypes(assemblysServices)
                       .AsImplementedInterfaces()
                       .InstancePerDependency()
-                      ;//允许将拦截器服务的列表分配给注册。
+                      .EnableInterfaceInterceptors()//引用Autofac.Extras.DynamicProxy;
+                      .InterceptedBy(cacheType.ToArray());//允许将拦截器服务的列表分配给注册。
+
+
 
             // 获取 Repository.dll 程序集服务，并注册
             var assemblysRepository = Assembly.LoadFrom(repositoryDllFile);
@@ -45,7 +56,10 @@ namespace EgtDemo
 
             #endregion
 
-          
+
+            builder.RegisterAssemblyTypes(Assembly.GetAssembly(typeof(LoveU)))
+                .EnableClassInterceptors()
+                .InterceptedBy(cacheType.ToArray());
 
         }
     }
