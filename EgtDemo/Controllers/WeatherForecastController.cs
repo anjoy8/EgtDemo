@@ -20,25 +20,19 @@ namespace EgtDemo.Controllers
         private readonly ILogger<WeatherForecastController> _logger;
         private readonly IDemoServ _demoServ;
         private readonly IRoleModulePermissionServices _roleModulePermissionServices;
-        private readonly LoveU _loveU;
 
-        public WeatherForecastController(ISysUserInfoServices sysUserInfoServices, ILogger<WeatherForecastController> logger, IDemoServ demoServ, IRoleModulePermissionServices roleModulePermissionServices,
-            LoveU loveU
+        public WeatherForecastController(ISysUserInfoServices sysUserInfoServices, ILogger<WeatherForecastController> logger, IDemoServ demoServ, IRoleModulePermissionServices roleModulePermissionServices
             )
         {
             _sysUserInfoServices = sysUserInfoServices;
             _logger = logger;
             _demoServ = demoServ;
             _roleModulePermissionServices = roleModulePermissionServices;
-            _loveU = loveU;
         }
 
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
-            _loveU.SayHi();
-
-
             var demos = _demoServ.GetDemos();
 
             var rng = new Random();
