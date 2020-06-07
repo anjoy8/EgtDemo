@@ -1,6 +1,8 @@
+using AspNetCoreRateLimit;
 using Autofac;
 using BCVP.Sample.Common;
 using BCVP.Sample.OPConsole.Extensions;
+using EgtDemo.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -27,6 +29,8 @@ namespace EgtDemo
 
             services.AddBCVPSqlsugarExtensions();
 
+            services.AddIpPolicyRateLimitSetup(Configuration);
+
         }
 
 
@@ -39,6 +43,9 @@ namespace EgtDemo
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            // Ip限流,尽量放管道外层
+            app.UseIpRateLimiting();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

@@ -33,7 +33,7 @@ namespace EgtDemo.Controllers
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
-            var demos = _demoServ.GetDemos();
+            //var demos = _demoServ.GetDemos();
 
             var rng = new Random();
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast

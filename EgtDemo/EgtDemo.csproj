@@ -3,16 +3,19 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
-<ItemGroup>
-  
-		<PackageReference Include="Autofac.Extensions.DependencyInjection" Version="6.0.0" />
-		<PackageReference Include="Autofac.Extras.DynamicProxy" Version="5.0.0" />
-		<PackageReference Include="BCVP.Sample.OP" Version="1.0.2" />
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.4" />
-</ItemGroup>
-<ItemGroup>
-  <ProjectReference Include="..\EgtDemo.IRepo\EgtDemo.IRepo.csproj" />
-  <ProjectReference Include="..\EgtDemo.IServ\EgtDemo.IServ.csproj" />
-</ItemGroup>
+  <ItemGroup>
+
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="6.0.0" />
+    <PackageReference Include="Autofac.Extras.DynamicProxy" Version="5.0.0" />
+    <PackageReference Include="BCVP.Sample.OP" Version="1.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.4" />
+
+
+    <PackageReference Include="AspNetCoreRateLimit" Version="3.0.5" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EgtDemo.IRepo\EgtDemo.IRepo.csproj" />
+    <ProjectReference Include="..\EgtDemo.IServ\EgtDemo.IServ.csproj" />
+  </ItemGroup>
 
 </Project>
