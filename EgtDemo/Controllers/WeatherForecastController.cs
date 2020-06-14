@@ -1,5 +1,6 @@
 ﻿using BCVP.Sample.IServices;
 using EgtDemo.IServ;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -8,6 +9,9 @@ using System.Linq;
 
 namespace EgtDemo.Controllers
 {
+    /// <summary>
+    /// controller 模块
+    /// </summary>
     [ApiController]
     [Route("api/[controller]/[action]")]
     public class WeatherForecastController : ControllerBase
@@ -30,7 +34,12 @@ namespace EgtDemo.Controllers
             _roleModulePermissionServices = roleModulePermissionServices;
         }
 
+        /// <summary>
+        /// weather get 接口
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
+        [Authorize]
         public IEnumerable<WeatherForecast> Get()
         {
             var demos = _demoServ.GetDemos();

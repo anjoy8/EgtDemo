@@ -3,16 +3,23 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
-<ItemGroup>
-  
-		<PackageReference Include="Autofac.Extensions.DependencyInjection" Version="6.0.0" />
-		<PackageReference Include="Autofac.Extras.DynamicProxy" Version="5.0.0" />
-		<PackageReference Include="BCVP.Sample.OP" Version="1.0.2" />
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.4" />
-</ItemGroup>
-<ItemGroup>
-  <ProjectReference Include="..\EgtDemo.IRepo\EgtDemo.IRepo.csproj" />
-  <ProjectReference Include="..\EgtDemo.IServ\EgtDemo.IServ.csproj" />
-</ItemGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>..\EgtDemo\EgtDemo.xml</DocumentationFile>
+    <NoWarn>1701;1702;1591;</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="6.0.0" />
+    <PackageReference Include="Autofac.Extras.DynamicProxy" Version="5.0.0" />
+    <PackageReference Include="BCVP.Sample.OP" Version="1.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.4" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.3.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="5.1.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EgtDemo.IRepo\EgtDemo.IRepo.csproj" />
+    <ProjectReference Include="..\EgtDemo.IServ\EgtDemo.IServ.csproj" />
+  </ItemGroup>
 
 </Project>

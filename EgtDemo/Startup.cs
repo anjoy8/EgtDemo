@@ -1,6 +1,7 @@
 using Autofac;
 using BCVP.Sample.Common;
 using BCVP.Sample.OPConsole.Extensions;
+using EgtDemo.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -27,6 +28,10 @@ namespace EgtDemo
 
             services.AddBCVPSqlsugarExtensions();
 
+            services.AddAuthentication("Bearer").AddJwtBearer();
+
+            services.AddSwaggerSetup();
+
         }
 
 
@@ -44,8 +49,11 @@ namespace EgtDemo
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseSwaggerMildd();
+
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

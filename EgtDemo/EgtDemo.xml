@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>EgtDemo</name>
+    </assembly>
+    <members>
+        <member name="T:EgtDemo.Controllers.WeatherForecastController">
+            <summary>
+            controller 模块
+            </summary>
+        </member>
+        <member name="M:EgtDemo.Controllers.WeatherForecastController.Get">
+            <summary>
+            weather get 接口
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="F:EgtDemo.Extensions.ApiVersions.V1">
+            <summary>
+            V1 版本
+            </summary>
+        </member>
+        <member name="F:EgtDemo.Extensions.ApiVersions.V2">
+            <summary>
+            V2 版本
+            </summary>
+        </member>
+        <member name="T:EgtDemo.Extensions.SwaggerSetup">
+            <summary>
+            Swagger 启动服务
+            </summary>
+        </member>
+    </members>
+</doc>
