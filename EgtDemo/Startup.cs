@@ -32,6 +32,10 @@ namespace EgtDemo
 
             services.AddSwaggerSetup();
 
+            services.AddMemoryCache();
+
+            services.AddMiniProfilerSetup();
+
         }
 
 
@@ -55,6 +59,8 @@ namespace EgtDemo
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseMiniProfiler();
 
             app.UseEndpoints(endpoints =>
             {

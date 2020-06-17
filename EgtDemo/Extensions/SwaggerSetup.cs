@@ -105,6 +105,14 @@ namespace EgtDemo.Extensions
 
                 // 路径配置，设置为空，表示直接在根域名（localhost:8001）访问该文件,注意localhost:8001/swagger是访问不到的，去launchSettings.json把launchUrl去掉，如果你想换一个路径，直接写名字即可，比如直接写c.RoutePrefix = "doc";
                 c.RoutePrefix = "doc";
+
+                c.HeadContent = @$"<script async='async' id='mini-profiler' src='/profiler/includes.min.js?v=4.1.0+c940f0f28d'
+                    data-version='4.1.0+c940f0f28d' data-path='/profiler/'
+                    data-current-id='4ec7c742-49d4-4eaf-8281-3c1e0efa8888' data-ids='4ec7c742-49d4-4eaf-8281-3c1e0efa8888'
+                    data-position='Left'
+                    data-authorized='true' data-max-traces='5' data-toggle-shortcut='Alt+P'
+                    data-trivial-milliseconds='2.0' data-ignored-duplicate-execute-types='Open,OpenAsync,Close,CloseAsync'>
+                </script>";
             });
         }
 

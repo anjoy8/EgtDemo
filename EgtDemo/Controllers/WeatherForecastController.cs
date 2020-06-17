@@ -39,7 +39,6 @@ namespace EgtDemo.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Authorize]
         public IEnumerable<WeatherForecast> Get()
         {
             var demos = _demoServ.GetDemos();

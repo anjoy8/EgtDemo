@@ -15,6 +15,11 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="T:EgtDemo.Extensions.MiniProfilerSetup">
+            <summary>
+            MiniProfiler 启动服务
+            </summary>
+        </member>
         <member name="F:EgtDemo.Extensions.ApiVersions.V1">
             <summary>
             V1 版本
