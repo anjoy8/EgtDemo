@@ -1,6 +1,7 @@
 using Autofac;
-using BCVP.Sample.Common;
+//using BCVP.Sample.Common;
 using BCVP.Sample.OPConsole.Extensions;
+using EgtDemo.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -21,11 +22,13 @@ namespace EgtDemo
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton(new Appsettings(Configuration));
+            services.AddSingleton(new BCVP.Sample.Common.Appsettings(Configuration));
 
             services.AddControllers();
 
             services.AddBCVPSqlsugarExtensions();
+
+            services.AddSingleton<IRedisCacheManager, RedisCacheManager>();
 
         }
 
