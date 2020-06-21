@@ -1,11 +1,13 @@
 using Autofac;
 using BCVP.Sample.Common;
 using BCVP.Sample.OPConsole.Extensions;
+using EgtDemo.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Appsettings = EgtDemo.Extensions.Appsettings;
 
 namespace EgtDemo
 {
@@ -26,6 +28,10 @@ namespace EgtDemo
             services.AddControllers();
 
             services.AddBCVPSqlsugarExtensions();
+
+            AppData appData = new AppData();
+            Configuration.Bind(appData);
+            services.AddSingleton(appData);
 
         }
 
