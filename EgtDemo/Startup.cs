@@ -1,6 +1,6 @@
 using Autofac;
 using BCVP.Sample.Common;
-using BCVP.Sample.OPConsole.Extensions;
+using BCVP.Sample.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -11,12 +11,14 @@ namespace EgtDemo
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
+            Env = env;
         }
 
         public IConfiguration Configuration { get; }
+        public IWebHostEnvironment Env { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -25,6 +27,7 @@ namespace EgtDemo
 
             services.AddControllers();
 
+            services.AddBCVPServiceInit(Configuration, Env);
             services.AddBCVPSqlsugarExtensions();
 
         }
