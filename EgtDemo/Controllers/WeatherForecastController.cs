@@ -1,6 +1,8 @@
 ﻿using BCVP.Sample.IServices;
+using EgtDemo.Extensions;
 using EgtDemo.IServ;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -20,19 +22,24 @@ namespace EgtDemo.Controllers
         private readonly ILogger<WeatherForecastController> _logger;
         private readonly IDemoServ _demoServ;
         private readonly IRoleModulePermissionServices _roleModulePermissionServices;
+        private readonly IHubContext<ChatHub> _hubContext;
 
-        public WeatherForecastController(ISysUserInfoServices sysUserInfoServices, ILogger<WeatherForecastController> logger, IDemoServ demoServ, IRoleModulePermissionServices roleModulePermissionServices
+        public WeatherForecastController(ISysUserInfoServices sysUserInfoServices, ILogger<WeatherForecastController> logger, IDemoServ demoServ, IRoleModulePermissionServices roleModulePermissionServices,
+            IHubContext<ChatHub> hubContext
             )
         {
             _sysUserInfoServices = sysUserInfoServices;
             _logger = logger;
             _demoServ = demoServ;
             _roleModulePermissionServices = roleModulePermissionServices;
+            _hubContext = hubContext;
         }
 
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
+            _hubContext.Clients.All.SendAsync("ReceiveMessage", "你好","世界！").Wait();
+
             var demos = _demoServ.GetDemos();
 
             var rng = new Random();

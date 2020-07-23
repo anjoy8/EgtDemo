@@ -1,6 +1,7 @@
 using Autofac;
 using BCVP.Sample.Common;
 using BCVP.Sample.Extensions;
+using EgtDemo.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -30,6 +31,11 @@ namespace EgtDemo
             services.AddBCVPServiceInit(Configuration, Env);
             services.AddBCVPSqlsugarExtensions();
 
+            //Microsoft.AspNetCore.SignalR.Protocols.NewtonsoftJson
+
+            services.AddSignalR().AddNewtonsoftJsonProtocol();
+
+
         }
 
 
@@ -46,6 +52,7 @@ namespace EgtDemo
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseStaticFiles();
 
             app.UseRouting();
 
@@ -54,6 +61,8 @@ namespace EgtDemo
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<ChatHub>("/api2/chatHub");
+
             });
         }
     }
