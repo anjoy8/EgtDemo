@@ -15,7 +15,16 @@
                 User..........<input type="text" id="userInput" />
                 <br />
                 Message...<input type="text" id="messageInput" />
-                <input type="button" id="sendButton" value="Send Message" />
+                <br />
+                Group.......<input type="text" name="group-name" id="group-name" placeholder="Type a group name" />
+                <br />
+                <input type="button" id="sendButton" value="Send Message" /><br />
+                <input type="button" id="join-group" class="btn" value="Join Group" />
+                <input type="button" id="groupmsg" class="btn" value="Send to Group" />
+                <input type="button" id="leave-group" class="btn" value="Leave Group" /><br />
+
+                <input type="button" id="usermsg" class="btn" value="Send to User" /><br />
+
             </div>
         </div>
         <div class="row">
@@ -65,6 +74,55 @@
             event.preventDefault();
         });
 
+
+
+        document.getElementById("groupmsg").addEventListener("click", function (event) {
+            var groupName = document.getElementById("group-name").value;
+            var groupMsg = document.getElementById("messageInput").value;
+            console.log(groupName + ":" + groupMsg);
+            try {
+                connection.invoke("SendMessageToGroup", groupName, groupMsg);
+            }
+            catch (e) {
+                console.error(e.toString());
+            }
+            event.preventDefault();
+        });
+
+        document.getElementById("join-group").addEventListener("click", function (event) {
+            var groupName = document.getElementById("group-name").value;
+            try {
+                connection.invoke("AddToGroup", groupName);
+            }
+            catch (e) {
+                console.error(e.toString());
+            }
+            event.preventDefault();
+        });
+
+        document.getElementById("leave-group").addEventListener("click", function (event) {
+            var groupName = document.getElementById("group-name").value;
+            try {
+                connection.invoke("RemoveFromGroup", groupName);
+            }
+            catch (e) {
+                console.error(e.toString());
+            }
+            event.preventDefault();
+        });
+
+        document.getElementById("usermsg").addEventListener("click", function (event) {
+            var userName = document.getElementById("userInput").value;
+            var msg = document.getElementById("messageInput").value;
+            console.log(userName + ":" + msg);
+            try {
+                connection.invoke("SendPrivateMessage", userName, msg);
+            }
+            catch (e) {
+                console.error(e.toString());
+            }
+            event.preventDefault();
+        });
     </script>
 </body>
 </html>

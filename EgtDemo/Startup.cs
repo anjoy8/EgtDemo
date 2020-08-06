@@ -35,7 +35,14 @@ namespace EgtDemo
 
             services.AddSignalR().AddNewtonsoftJsonProtocol();
 
-
+            services.AddAuthentication("Cookies")
+              .AddCookie(options =>
+              {
+                  options.LoginPath = "/Account/Login";
+                  options.Cookie.Name = "AspnetcoreSessionId";
+                  options.Cookie.Path = "/";
+                  options.Cookie.HttpOnly = true;
+              });
         }
 
 
@@ -56,6 +63,7 @@ namespace EgtDemo
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
