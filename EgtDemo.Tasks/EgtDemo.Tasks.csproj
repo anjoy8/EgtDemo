@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="BCVP.Sample.IServices" Version="1.0.6.33" />
+    <PackageReference Include="Quartz" Version="3.0.7" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EgtDemo.IServ\EgtDemo.IServ.csproj" />
+  </ItemGroup>
+
+</Project>

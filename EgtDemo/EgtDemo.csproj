@@ -13,6 +13,7 @@
 <ItemGroup>
   <ProjectReference Include="..\EgtDemo.IRepo\EgtDemo.IRepo.csproj" />
   <ProjectReference Include="..\EgtDemo.IServ\EgtDemo.IServ.csproj" />
+  <ProjectReference Include="..\EgtDemo.Tasks\EgtDemo.Tasks.csproj" />
 </ItemGroup>
 
 </Project>

@@ -1,11 +1,14 @@
 using Autofac;
 using BCVP.Sample.Common;
 using BCVP.Sample.Extensions;
+using BCVP.Sample.IServices;
+using EgtDemo.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Quartz.Spi;
 
 namespace EgtDemo
 {
@@ -30,6 +33,10 @@ namespace EgtDemo
             services.AddBCVPServiceInit(Configuration, Env);
             services.AddBCVPSqlsugarExtensions();
 
+            services.AddSingleton<IJobFactory, JobFactory>();
+            services.AddSingleton<ISchedulerCenter, SchedulerCenterServer>();
+            services.AddTransient<Job_Blogs_Quartz>();//Job使用瞬时依赖注入
+
         }
 
 
@@ -40,7 +47,7 @@ namespace EgtDemo
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ITasksQzServices tasksQzServices, ISchedulerCenter schedulerCenter)
         {
             if (env.IsDevelopment())
             {
@@ -55,6 +62,9 @@ namespace EgtDemo
             {
                 endpoints.MapControllers();
             });
+
+            app.UseQuartzJobMildd(tasksQzServices, schedulerCenter);
+
         }
     }
 }
