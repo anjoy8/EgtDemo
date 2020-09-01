@@ -6,10 +6,13 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace EgtDemo.Controllers
@@ -40,9 +43,14 @@ namespace EgtDemo.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<WeatherForecast> Get()
+        public IEnumerable<WeatherForecast> Get(string access_token = "")
         {
-            _hubContext.Clients.All.SendAsync("ReceiveMessage", "你好","世界！").Wait();
+            _hubContext.Clients.All.SendAsync("ReceiveMessage", "你好", "世界！").Wait();
+
+            var user = GetUserInfoFromToken(ClaimTypes.NameIdentifier, access_token).FirstOrDefault();
+
+            _hubContext.Clients.User(user).SendAsync("ReceiveMessage", user, "发奖啦");
+
 
             var demos = _demoServ.GetDemos();
 
@@ -54,6 +62,64 @@ namespace EgtDemo.Controllers
                 Summary = Summaries[rng.Next(Summaries.Length)]
             })
             .ToArray();
+        }
+
+        public List<string> GetUserInfoFromToken(string ClaimType, string access_token)
+        {
+
+            var jwtHandler = new JwtSecurityTokenHandler();
+            if (!string.IsNullOrEmpty(access_token))
+            {
+                JwtSecurityToken jwtToken = jwtHandler.ReadJwtToken(access_token);
+
+                return (from item in jwtToken.Claims
+                        where item.Type == ClaimType
+                        select item.Value).ToList();
+            }
+            else
+            {
+                return new List<string>() { };
+            }
+        }
+
+        [HttpGet]
+        public string GetToken(string username)
+        {
+            string iss = "Issuer";
+            string aud = "Audience";
+            string secret = "asdfghjkl;1234567890";
+
+            //var claims = new Claim[] //old
+            var claims = new List<Claim>
+                {
+                new Claim(ClaimTypes.Name,username),   //储存用户name
+                new Claim(ClaimTypes.NameIdentifier,username),  //储存用户name
+                new Claim(JwtRegisteredClaimNames.Jti, "1"),
+                new Claim(JwtRegisteredClaimNames.Iat, $"{new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds()}"),
+                new Claim(JwtRegisteredClaimNames.Nbf,$"{new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds()}") ,
+              
+                //这个就是过期时间，目前是过期1000秒，可自定义，注意JWT有自己的缓冲过期时间
+                new Claim (JwtRegisteredClaimNames.Exp,$"{new DateTimeOffset(DateTime.Now.AddSeconds(1000)).ToUnixTimeSeconds()}"),
+                new Claim(ClaimTypes.Expiration, DateTime.Now.AddSeconds(1000).ToString()),
+                new Claim(JwtRegisteredClaimNames.Iss,iss),
+                new Claim(JwtRegisteredClaimNames.Aud,aud),
+
+               };
+
+
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var jwt = new JwtSecurityToken(
+                issuer: iss,
+                claims: claims,
+                signingCredentials: creds);
+
+            var jwtHandler = new JwtSecurityTokenHandler();
+            var encodedJwt = jwtHandler.WriteToken(jwt);
+
+            return encodedJwt;
         }
 
         [HttpGet]

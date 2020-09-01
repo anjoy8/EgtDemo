@@ -2,11 +2,15 @@ using Autofac;
 using BCVP.Sample.Common;
 using BCVP.Sample.Extensions;
 using EgtDemo.Extensions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace EgtDemo
 {
@@ -35,14 +39,51 @@ namespace EgtDemo
 
             services.AddSignalR().AddNewtonsoftJsonProtocol();
 
-            services.AddAuthentication("Cookies")
-              .AddCookie(options =>
-              {
-                  options.LoginPath = "/Account/Login";
-                  options.Cookie.Name = "AspnetcoreSessionId";
-                  options.Cookie.Path = "/";
-                  options.Cookie.HttpOnly = true;
-              });
+            //services.AddAuthentication("Cookies")
+            //  .AddCookie(options =>
+            //  {
+            //      options.LoginPath = "/Account/Login";
+            //      options.Cookie.Name = "AspnetcoreSessionId";
+            //      options.Cookie.Path = "/";
+            //      options.Cookie.HttpOnly = true;
+            //  });
+
+
+            services.AddAuthentication(options =>
+            {
+                // Identity made Cookie authentication the default.
+                // However, we want JWT Bearer Auth to be the default.
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+           .AddJwtBearer(options =>
+           {
+               options.TokenValidationParameters = new TokenValidationParameters
+               {
+                   ValidIssuer = "Issuer",
+                   ValidAudience = "Audience",
+                   IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("asdfghjkl;1234567890"))
+               };
+
+               options.Events = new JwtBearerEvents
+               {
+                   OnMessageReceived = context =>
+                   {
+                       var accessToken = context.Request.Query["access_token"];
+
+                       // If the request is for our hub...
+                       var path = context.HttpContext.Request.Path;
+                       if (!string.IsNullOrEmpty(accessToken) && (path.StartsWithSegments("/api2/chatHub")))
+                       {
+                           // Read the token out of the query string
+                           context.Token = accessToken;
+                       }
+                       return Task.CompletedTask;
+                   }
+               };
+           });
+
+
         }
 
 

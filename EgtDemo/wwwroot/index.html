@@ -43,9 +43,23 @@
     <script src="js/signalr.min.js"></script>
 
     <script>
+        function getUrlParam() {
+            var url = location.search; //获取url中"?"符后的字串
+            var theRequest = new Object();
+            if (url.indexOf("?") != -1) {
+                var str = url.substr(1);
+                strs = str.split("&");
+                console.log(strs)
+                for (var i = 0; i < strs.length; i++) {
+                    theRequest[strs[i].split("=")[0]] = decodeURIComponent(strs[i].split("=")[1]);
+                }
+            }
+            return theRequest;
+        }
 
+        var params = getUrlParam();
         // 连接到集线器
-        var connection = new signalR.HubConnectionBuilder().withUrl("/api2/chatHub").build();
+        var connection = new signalR.HubConnectionBuilder().withUrl("/api2/chatHub?access_token=" + params['access_token']).build();
         connection.start().then(function () {
             var li = document.createElement("li");
             li.textContent = "连接成功！";
@@ -58,7 +72,7 @@
         // 从中心调用客户端方法，订阅接收信息
         connection.on("ReceiveMessage", function (user, message) {
             var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-            var encodedMsg = user + " says " + msg;
+            var encodedMsg = user + "  " + msg;
             var li = document.createElement("li");
             li.textContent = encodedMsg;
             document.getElementById("messagesList").appendChild(li);
@@ -91,6 +105,10 @@
 
         document.getElementById("join-group").addEventListener("click", function (event) {
             var groupName = document.getElementById("group-name").value;
+            if (!groupName) {
+                alert("组名不能为空")
+                return;
+            }
             try {
                 connection.invoke("AddToGroup", groupName);
             }
@@ -102,6 +120,10 @@
 
         document.getElementById("leave-group").addEventListener("click", function (event) {
             var groupName = document.getElementById("group-name").value;
+            if (!groupName) {
+                alert("组名不能为空")
+                return;
+            }
             try {
                 connection.invoke("RemoveFromGroup", groupName);
             }
@@ -112,6 +134,10 @@
         });
 
         document.getElementById("usermsg").addEventListener("click", function (event) {
+            if (!params['access_token']) {
+                alert("未登录，令牌为空，不能发送消息给个人")
+                return;
+            }
             var userName = document.getElementById("userInput").value;
             var msg = document.getElementById("messageInput").value;
             console.log(userName + ":" + msg);
