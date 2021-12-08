@@ -1,0 +1,154 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Blog.Core</title>
+
+</head>
+<body>
+
+    <div class="container">
+        <div class="row">&nbsp;</div>
+        <div class="row">
+            <div class="col-6">&nbsp;</div>
+            <div class="col-6">
+                User..........<input type="text" id="userInput" />
+                <br />
+                Message...<input type="text" id="messageInput" />
+                <br />
+                Group.......<input type="text" name="group-name" id="group-name" placeholder="Type a group name" />
+                <br />
+                <input type="button" id="sendButton" value="Send Message" /><br />
+                <input type="button" id="join-group" class="btn" value="Join Group" />
+                <input type="button" id="groupmsg" class="btn" value="Send to Group" />
+                <input type="button" id="leave-group" class="btn" value="Leave Group" /><br />
+
+                <input type="button" id="usermsg" class="btn" value="Send to User" /><br />
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <hr />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">&nbsp;</div>
+            <div class="col-6">
+                <ul id="messagesList"></ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/signalr.min.js"></script>
+
+    <script>
+        function getUrlParam() {
+            var url = location.search; //获取url中"?"符后的字串
+            var theRequest = new Object();
+            if (url.indexOf("?") != -1) {
+                var str = url.substr(1);
+                strs = str.split("&");
+                console.log(strs)
+                for (var i = 0; i < strs.length; i++) {
+                    theRequest[strs[i].split("=")[0]] = decodeURIComponent(strs[i].split("=")[1]);
+                }
+            }
+            return theRequest;
+        }
+
+        var params = getUrlParam();
+        // 连接到集线器
+        var connection = new signalR.HubConnectionBuilder().withUrl("/api2/chatHub?access_token=" + params['access_token']).build();
+        connection.start().then(function () {
+            var li = document.createElement("li");
+            li.textContent = "连接成功！";
+            document.getElementById("messagesList").appendChild(li);
+
+        }).catch(function (err) {
+            return console.error(err.toString());
+        });
+
+        // 从中心调用客户端方法，订阅接收信息
+        connection.on("ReceiveMessage", function (user, message) {
+            var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            var encodedMsg = user + "  " + msg;
+            var li = document.createElement("li");
+            li.textContent = encodedMsg;
+            document.getElementById("messagesList").appendChild(li);
+        });
+
+        // 从客户端调用集线器方法，发送信息
+        document.getElementById("sendButton").addEventListener("click", function (event) {
+            var user = document.getElementById("userInput").value;
+            var message = document.getElementById("messageInput").value;
+            connection.invoke("SendMessage", user, message).catch(function (err) {
+                return console.error(err.toString());
+            });
+            event.preventDefault();
+        });
+
+
+
+        document.getElementById("groupmsg").addEventListener("click", function (event) {
+            var groupName = document.getElementById("group-name").value;
+            var groupMsg = document.getElementById("messageInput").value;
+            console.log(groupName + ":" + groupMsg);
+            try {
+                connection.invoke("SendMessageToGroup", groupName, groupMsg);
+            }
+            catch (e) {
+                console.error(e.toString());
+            }
+            event.preventDefault();
+        });
+
+        document.getElementById("join-group").addEventListener("click", function (event) {
+            var groupName = document.getElementById("group-name").value;
+            if (!groupName) {
+                alert("组名不能为空")
+                return;
+            }
+            try {
+                connection.invoke("AddToGroup", groupName);
+            }
+            catch (e) {
+                console.error(e.toString());
+            }
+            event.preventDefault();
+        });
+
+        document.getElementById("leave-group").addEventListener("click", function (event) {
+            var groupName = document.getElementById("group-name").value;
+            if (!groupName) {
+                alert("组名不能为空")
+                return;
+            }
+            try {
+                connection.invoke("RemoveFromGroup", groupName);
+            }
+            catch (e) {
+                console.error(e.toString());
+            }
+            event.preventDefault();
+        });
+
+        document.getElementById("usermsg").addEventListener("click", function (event) {
+            if (!params['access_token']) {
+                alert("未登录，令牌为空，不能发送消息给个人")
+                return;
+            }
+            var userName = document.getElementById("userInput").value;
+            var msg = document.getElementById("messageInput").value;
+            console.log(userName + ":" + msg);
+            try {
+                connection.invoke("SendPrivateMessage", userName, msg);
+            }
+            catch (e) {
+                console.error(e.toString());
+            }
+            event.preventDefault();
+        });
+    </script>
+</body>
+</html>
